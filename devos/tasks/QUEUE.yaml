@@ -1,0 +1,415 @@
+version: '3.0'
+tickets:
+- id: T-001
+  owner: CLAUDE2
+  status: doing
+  priority: high
+  goal: 'os2 최초 설정을 자동화하는 scripts/setup.sh 스크립트와 make setup Makefile 타겟을 구현한다.
+
+    make setup 한 줄로 아래 4단계를 순차 실행하며, 이미 설정된 항목은 스킵한다.
+
+    '
+  context: "현재 os2 최초 설정은 START_HERE.md를 보고 수동으로 진행해야 한다.\n자동화 스크립트가 없어 새 컴퓨터(서브 컴\
+    \ 등)에서 설정 시 누락 발생 위험이 있다.\n\n## 동작 흐름 (순서대로)\n\n1. CLI 도구 확인\n   - 필수 (없으면 에러\
+    \ 후 exit): python3, pip3, git\n   - 선택 (없으면 경고만): claude, codex, gemini, tmux\n\
+    \   - 각 도구의 설치 안내 URL 포함\n\n2. Python 의존성 설치\n   - pip3 install -r requirements.txt\
+    \ -q\n\n3. 환경변수 설정 (비파괴적 — 이미 있으면 스킵)\n   - OS2_TG_TOKEN: 환경에 없으면 read -rp 로 입력\
+    \ 받음\n   - OS2_TG_ALLOWED_USER: 환경에 없으면 read -rp 로 입력 받음 (선택)\n   - 입력받은 값은 프로젝트\
+    \ 루트 .env 파일에 저장 (이미 키가 있으면 추가 안 함)\n   - ~/.zshrc 영구 등록 여부도 y/N 으로 물어봄 (중복 방지\
+    \ 로직 포함)\n   - .env 로드: 스크립트 시작 시 .env 존재하면 set -a; source .env; set +a\n\n4.\
+    \ Claude 2 (Account B) 인증 확인\n   - .claude-b/.credentials.json 존재 여부 확인\n   -\
+    \ 없으면 경고 + \"CLAUDE_CONFIG_DIR=.claude-b claude login\" 안내\n\n## 출력 형식\n- 색상 출력:\
+    \ ✅ (green), ⚠️ (yellow), ❌ (red)\n- 섹션 헤더: \"1/4 CLI 도구 확인\" 형식\n- 최종 요약: 경고\
+    \ 수에 따라 완료/주의 메시지\n\n## Makefile 변경\n- scripts/setup.sh 를 실행하는 setup 타겟 추가\n-\
+    \ .PHONY 리스트에 setup 추가\n- help 타겟 Setup 섹션에 make setup 항목 추가\n\n## 환경변수 참고\n-\
+    \ server/config.py: get_telegram_token() — OS2_TG_TOKEN 읽음\n- server/config.py:\
+    \ get_allowed_user() — OS2_TG_ALLOWED_USER 읽음\n- .gitignore: .env 이미 gitignore\
+    \ 처리됨\n"
+  constraints:
+  - bash (#!/usr/bin/env bash), macOS zsh 환경 호환
+  - set -e 사용하되 선택 항목 입력 스킵은 에러 처리 주의
+  - 토큰 값을 터미널에 echo 하지 말 것 (보안)
+  - 비파괴적: 이미 설정된 값은 절대 덮어쓰지 않음
+  dod:
+  - make setup 실행 시 4단계가 순서대로 출력됨
+  - 모든 도구 설치 + 토큰 설정 완료 환경에서 경고 없이 완료됨
+  - OS2_TG_TOKEN 이 이미 설정된 환경에서 실행 시 입력 프롬프트 없이 스킵됨
+  - .env 에 토큰이 저장되고 make start 로 서버가 정상 시작됨
+  - zshrc 등록 거부 시 .env 만 저장되고 zshrc 는 변경되지 않음
+  files:
+  - scripts/setup.sh
+  - Makefile
+  verify: bash scripts/setup.sh
+  deps: []
+  contract_impact: none
+  plan_id: null
+- id: T-HUB-01
+  owner: CODEX
+  status: done
+  priority: high
+  goal: /Users/hoanshin/Desktop/thePRD/os2-hub/ 디렉토리를 생성하고 hub.yaml, requirements.txt,
+    hub/__init__.py 파일을 작성한다.
+  context: "## 배경\nos2와 deck 두 프로젝트가 동일한 TG 봇 토큰을 공유하여 하나만 실행 가능.\nN개 프로젝트를 하나의 봇으로\
+    \ 관리하기 위해 별도 os2-hub 레포를 생성한다.\n핵심 컨셉: TG ↔ 터미널 다리. 코드 import 없이 각 프로젝트 디렉토리에서\
+    \ shell 명령으로 조작.\n\n## hub.yaml 내용\n```yaml\ndefault_project: deck\nprojects_root:\
+    \ /Users/hoanshin/Desktop/thePRD\n\nprojects:\n  os2:\n    path: /Users/hoanshin/Desktop/thePRD/os2\n\
+    \    description: \"Agentic Coding OS\"\n  deck:\n    path: /Users/hoanshin/Desktop/thePRD/deck\n\
+    \    description: \"Presentation app\"\n\ntelegram:\n  token_env: OS2_TG_TOKEN\n\
+    \  allowed_user_env: OS2_TG_ALLOWED_USER\n```\n\n## requirements.txt 내용\npython-telegram-bot>=21.0\n\
+    pyyaml>=6.0\n\n## hub/__init__.py\n빈 파일\n"
+  constraints:
+  - os2-hub은 os2나 deck 레포가 아닌 별도 디렉토리에 생성
+  - git init 포함
+  - .gitignore: __pycache__/, *.pyc, .env
+  dod:
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/ 디렉토리 존재
+  - hub.yaml, requirements.txt, hub/__init__.py 존재
+  - git init 완료
+  files:
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub.yaml
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/requirements.txt
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub/__init__.py
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/.gitignore
+  verify: ls /Users/hoanshin/Desktop/thePRD/os2-hub/hub.yaml
+  deps: []
+  contract_impact: none
+  plan_id: os2-hub
+- id: T-HUB-02
+  owner: CODEX
+  status: done
+  priority: high
+  goal: hub/config.py와 hub/executor.py를 구현한다.
+  context: "## hub/config.py (~40줄)\nhub.yaml을 로드하고 프로젝트 경로를 검증하는 모듈.\n\n```python\n\
+    def load_hub_config(config_path: str = \"hub.yaml\") -> dict:\n    \"\"\"hub.yaml\
+    \ 로드. projects의 path 존재 여부 검증.\"\"\"\n\ndef get_projects(config: dict) -> dict:\n\
+    \    \"\"\"name → {path: Path, description: str} 딕셔너리 반환.\"\"\"\n\ndef get_telegram_token(config:\
+    \ dict) -> str:\n    \"\"\"OS2_TG_TOKEN 환경변수 읽기. 없으면 ValueError.\"\"\"\n\ndef\
+    \ get_allowed_user(config: dict) -> int | None:\n    \"\"\"OS2_TG_ALLOWED_USER\
+    \ 환경변수 읽기.\"\"\"\n```\n\n## hub/executor.py (~60줄)\nasyncio subprocess 기반 터미널\
+    \ 명령 실행 엔진.\n\n중요: claude -p는 stdin이 아닌 인자로 프롬프트를 받음.\n참조: os2/server/planner.py:121\
+    \ → subprocess.run([\"claude\", \"-p\", full_prompt], cwd=project_root)\n\n```python\n\
+    class Executor:\n    async def run(self, cmd: str, cwd: Path, timeout: int = 120)\
+    \ -> tuple[int, str, str]:\n        \"\"\"shell 명령 asyncio subprocess로 실행. (returncode,\
+    \ stdout, stderr) 반환.\"\"\"\n\n    async def invoke_claude1(self, prompt: str,\
+    \ project_path: Path, timeout: int = 300) -> str:\n        \"\"\"\n        프로젝트\
+    \ 디렉토리에서 claude -p 실행.\n        해당 프로젝트의 .claude/CLAUDE.md가 자동 적용됨.\n        cmd:\
+    \ f\"claude -p {shlex.quote(prompt)}\"\n        cwd: project_path\n        \"\"\
+    \"\n\n    async def read_file(self, filepath: Path, max_chars: int = 3000) ->\
+    \ str:\n        \"\"\"파일 읽기. 없으면 'File not found: {path}' 반환.\"\"\"\n\n    async\
+    \ def clone_project(self, url: str, dest: Path) -> tuple[bool, str]:\n       \
+    \ \"\"\"git clone url dest. (success, message) 반환.\"\"\"\n```\n"
+  constraints:
+  - asyncio 기반 (python-telegram-bot v21+이 asyncio 사용)
+  - shlex.quote로 프롬프트 이스케이프
+  - timeout 초과 시 TimeoutError가 아닌 메시지 문자열 반환
+  dod:
+  - hub/config.py 존재, load_hub_config() 작동
+  - hub/executor.py 존재, Executor 클래스 작동
+  - python3 -c "from hub.config import load_hub_config; print(load_hub_config())"
+    오류 없음
+  files:
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub/config.py
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub/executor.py
+  verify: cd /Users/hoanshin/Desktop/thePRD/os2-hub && python3 -c "from hub.config
+    import load_hub_config; load_hub_config()"
+  deps:
+  - T-HUB-01
+  contract_impact: none
+  plan_id: os2-hub
+- id: T-HUB-03
+  owner: CODEX
+  status: done
+  priority: high
+  goal: hub/bot.py에 HubBot 클래스를 구현한다. TG 명령어 핸들러 전체 포함.
+  context: '## 구조
+
+    OS2Bot(os2/server/telegram.py)을 참조하되 routing 레이어 추가.
+
+    python-telegram-bot v21+ 사용.
+
+
+    ## 상태
+
+    - self.active_project: str — 활성 프로젝트명 (기본: hub.yaml의 default_project)
+
+    - self.projects: dict — name → {path: Path, description: str}
+
+    - self.executor: Executor
+
+
+    ## 명령어 목록
+
+
+    ### hub 내부 처리 (subprocess 없음)
+
+    - /start — 도움말 (hub 명령어 전체 목록)
+
+    - /projects — 등록된 프로젝트 목록 + 활성 표시 (★)
+
+    - /switch <name> — 활성 프로젝트 전환
+
+
+    ### 파일 읽기 (executor.read_file)
+
+    - /status — devos/PROJECT_STATE.md 내용
+
+    - /queue — devos/tasks/QUEUE.yaml 내용
+
+    - /logs — devos/logs/ 최근 5개 파일명 목록
+
+
+    ### make 명령 실행 (executor.run)
+
+    - /start-server — make start (cwd=active project)
+
+    - /stop-server — make stop (cwd=active project)
+
+    - /server-status — make ps (cwd=active project)
+
+    - /dispatch T-XXX — make dispatch T=T-XXX (cwd=active project)
+
+    - /approve — make approve (cwd=active project) — 없으면 fallback: pending/ 디렉토리의
+    첫 파일을 approved/로 이동
+
+
+    ### Claude 1 호출 (executor.invoke_claude1)
+
+    - /prd <text> — "Decompose this PRD: {text}"
+
+    - /ask <question> — question 그대로 전달
+
+    - 자유 텍스트 — 텍스트 그대로 전달
+
+
+    ### git 명령 (executor.clone_project)
+
+    - /clone <url> [name] — git clone 후 hub.yaml에 프로젝트 추가, active로 전환
+
+
+    ## 응답 형식
+
+    - 모든 응답에 [project_name] 프리픽스
+
+    - Claude 1 응답은 3000자 truncate
+
+    - make 명령 결과: returncode != 0이면 stderr 포함한 오류 메시지
+
+    - ParseMode.MARKDOWN 사용
+
+
+    ## 참조 파일
+
+    os2/server/telegram.py — OS2Bot 구조 (auth, _reply, build_app, run 패턴)
+
+    '
+  constraints:
+  - /start-server 명령은 /start 명령과 충돌하지 않게 CommandHandler 등록 순서 주의
+  - /clone 후 hub.yaml 파일을 실제로 업데이트 (yaml.dump)
+  - send_notification() 메서드 포함 (dispatcher 콜백용, 이번에는 쓰이지 않지만 인터페이스 준비)
+  dod:
+  - hub/bot.py 존재
+  - HubBot 클래스에 위 명령어 핸들러 모두 구현
+  - /switch 후 /status 호출 시 전환된 프로젝트 경로의 파일 반환
+  files:
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub/bot.py
+  verify: cd /Users/hoanshin/Desktop/thePRD/os2-hub && python3 -c "from hub.bot import
+    HubBot; print('ok')"
+  deps:
+  - T-HUB-02
+  contract_impact: none
+  plan_id: os2-hub
+- id: T-HUB-04
+  owner: CODEX
+  status: done
+  priority: medium
+  goal: hub/__main__.py 진입점과 com.os2.hub.plist launchd 데몬 설정을 작성한다.
+  context: "## hub/__main__.py (~40줄)\n참조: os2/server/__main__.py — 와이어링 패턴 동일\n\n\
+    흐름:\n1. hub.yaml 로드 (없으면 오류 후 exit)\n2. OS2_TG_TOKEN 읽기 (없으면 오류 + 안내 후 exit)\n\
+    3. allowed_user 읽기 (없으면 경고)\n4. Executor() 생성\n5. HubBot(token, allowed_user,\
+    \ projects, default_project, executor) 생성\n6. bot.run() (blocking)\n\n실행 방법: cd\
+    \ os2-hub && python3 -m hub\n\n## com.os2.hub.plist\nmacOS launchd 서비스. 참조: os2의\
+    \ com.os2.server.plist 패턴.\n\n```xml\nLabel: com.os2.hub\nProgramArguments: [python3,\
+    \ -m, hub]\nWorkingDirectory: /Users/hoanshin/Desktop/thePRD/os2-hub\nEnvironmentVariables:\
+    \ (OS2_TG_TOKEN, OS2_TG_ALLOWED_USER을 .env에서 읽지 않으므로\n                       launchd에\
+    \ 직접 주입 필요 — 값은 플레이스홀더로 남기고 주석으로 안내)\nKeepAlive: true\nRunAtLoad: true\nStandardOutPath:\
+    \ /tmp/os2-hub.log\nStandardErrorPath: /tmp/os2-hub.err\n```\n\n## README.md (선택)\n\
+    간단한 설치 및 실행 방법 (5줄 이내)\n"
+  constraints:
+  - plist의 EnvironmentVariables 값은 플레이스홀더("YOUR_TOKEN_HERE")로 남기고, 실제 값 주입 방법을 주석으로
+    안내
+  - WorkingDirectory는 절대경로
+  dod:
+  - hub/__main__.py 존재
+  - cd os2-hub && python3 -m hub 실행 시 hub.yaml 없으면 명확한 오류 메시지 출력
+  - com.os2.hub.plist 존재
+  files:
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub/__main__.py
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/com.os2.hub.plist
+  verify: cd /Users/hoanshin/Desktop/thePRD/os2-hub && python3 -m hub --help 2>&1
+    || python3 -c "from hub.__main__ import main; print('importable')"
+  deps:
+  - T-HUB-03
+  contract_impact: none
+  plan_id: os2-hub
+- id: T-HUB-05
+  owner: CODEX
+  status: done
+  priority: high
+  goal: TG 토큰 설정을 os2/deck setup.sh에서 제거하고 os2-hub/scripts/setup.sh로 이전한다.
+  context: '## 배경
+
+    os2-hub가 TG 봇 연결을 전담하므로 각 프로젝트 setup.sh에서 TG 토큰 수집 스텝이 불필요해졌다.
+
+    현재 os2/scripts/setup.sh 3단계에서 OS2_TG_TOKEN, OS2_TG_ALLOWED_USER를 수집하고 .env와 ~/.zshrc에
+    저장한다.
+
+
+    ## 변경 사항
+
+
+    ### 1. os2/scripts/setup.sh 수정
+
+    - 3단계에서 OS2_TG_TOKEN, OS2_TG_ALLOWED_USER 수집/저장 코드 제거 (75~119번, 173~182번 줄 부근)
+
+    - 3단계 섹션에 안내 문구로 대체: "TG 토큰은 os2-hub에서 설정 (os2-hub/scripts/setup.sh)"
+
+
+    ### 2. deck/scripts/setup.sh 수정
+
+    - os2/scripts/setup.sh와 동일하게 TG 토큰 관련 코드 제거 및 안내 문구 추가
+
+
+    ### 3. os2-hub/scripts/setup.sh 신규 생성
+
+    - os2/scripts/setup.sh 구조 참조 (색상 출력, set -e 방식 동일)
+
+    - 단계: (1) CLI 도구 확인, (2) pip3 install, (3) TG 토큰 설정 (OS2_TG_TOKEN 필수, OS2_TG_ALLOWED_USER
+    선택)
+
+    - os2-hub/.env에 비파괴적 저장, ~/.zshrc 등록 여부 y/N 확인
+
+    - launchd plist 환경변수 주입 방법 안내 (launchctl setenv)
+
+
+    ### 4. os2-hub/Makefile 신규 생성
+
+    - setup: bash scripts/setup.sh
+
+    - install: pip3 install -r requirements.txt
+
+    - start: python3 -m hub
+
+    '
+  constraints:
+  - os2/scripts/setup.sh 기존 구조(색상 함수, 섹션 헤더) 유지
+  - '비파괴적: 이미 설정된 값 덮어쓰지 않음'
+  - 토큰 값 터미널에 echo 금지
+  dod:
+  - os2/scripts/setup.sh에서 TG 토큰 수집 코드 없음
+  - deck/scripts/setup.sh에서 TG 토큰 수집 코드 없음
+  - os2-hub/scripts/setup.sh 존재하고 실행 가능
+  - os2-hub/Makefile의 make setup 작동
+  files:
+  - scripts/setup.sh
+  - /Users/hoanshin/Desktop/thePRD/deck/scripts/setup.sh
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/scripts/setup.sh
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/Makefile
+  verify: head -5 /Users/hoanshin/Desktop/thePRD/os2-hub/scripts/setup.sh
+  deps:
+  - T-HUB-04
+  contract_impact: none
+  plan_id: os2-hub
+- id: T-HUB-07
+  owner: CODEX
+  status: done
+  priority: low
+  goal: os2-hub 서버 관리 명령어를 -server 접미사로 통일하고 /setup-server 명령을 추가한다.
+  context: '## 변경 사항
+
+
+    ### 1. /server-status → /status-server 변경
+
+    - bot.py에서 cmd_server_status �핸들러의 MessageHandler regex 패턴 변경
+
+    - `r"^/server-status(?:\s|$|@)"` → `r"^/status-server(?:\s|$|@)"`
+
+    - /start 명령어에도 도움말 텍스트 업데이트
+
+
+    ### 2. /setup-server 명령 추가
+
+    - cmd_setup_server 핸들러 추가: `await self._run_make("setup")`
+
+    - MessageHandler regex: `r"^/setup-server(?:\s|$|@)"`
+
+    - /start 도움말에 추가
+
+
+    ## 최종 서버 관리 명령어 목록
+
+    - /setup-server → make setup
+
+    - /start-server → make start
+
+    - /stop-server → make stop
+
+    - /status-server → make ps
+
+    '
+  constraints:
+  - 하이픈 명령어는 CommandHandler가 아닌 MessageHandler + regex로 등록 (기존 패턴 유지)
+  - /start와 /start-server 충돌 방지 로직 유지
+  - 기존 /server-status alias 메서드(handle_server_status_alias) 이름도 handle_status_server_alias로
+    변경
+  dod:
+  - /setup-server, /start-server, /stop-server, /status-server 모두 동작
+  - /server-status는 더 이상 등록되지 않음
+  - /start 도움말에 4개 명령어 모두 표시
+  files:
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub/bot.py
+  verify: cd /Users/hoanshin/Desktop/thePRD/os2-hub && python3 -c "from hub.bot import
+    HubBot; print('ok')"
+  deps:
+  - T-HUB-06
+  contract_impact: none
+  plan_id: os2-hub
+- id: T-HUB-06
+  owner: CODEX
+  status: done
+  priority: medium
+  goal: hub.yaml의 프로젝트 경로를 상대경로로 지원하고, config.py에서 hub.yaml 위치 기준으로 resolve되도록 수정한다.
+  context: "## 배경\n현재 hub.yaml의 path 값이 절대경로로 하드코딩되어 있어 다른 컴퓨터에서는 경로 수정이 필요하다.\nos2-hub/는\
+    \ 항상 os2/, deck/ 등 프로젝트들의 형제 디렉토리이므로, 상대경로(../os2 등)를 사용하면 어느 컴퓨터에서도 동작한다.\n\n\
+    ## 변경 사항\n\n### 1. hub.yaml 수정\n```yaml\ndefault_project: deck\nprojects_root:\
+    \ ..  # hub 부모 디렉토리\n\nprojects:\n  os2:\n    path: ../os2\n  deck:\n    path:\
+    \ ../deck\n```\n\n### 2. hub/config.py의 get_projects() 수정\n현재: Path(project[\"\
+    path\"]).expanduser()\n변경: hub.yaml 파일이 있는 디렉토리(hub_dir)를 기준으로 resolve\n\n```python\n\
+    def get_projects(config: dict, config_path: str = \"hub.yaml\") -> dict:\n   \
+    \ hub_dir = Path(config_path).resolve().parent\n    projects = {}\n    for name,\
+    \ project in config.get(\"projects\", {}).items():\n        raw = Path(project[\"\
+    path\"]).expanduser()\n        if not raw.is_absolute():\n            raw = hub_dir\
+    \ / raw\n        projects[name] = {\n            \"path\": raw.resolve(),\n  \
+    \          \"description\": project.get(\"description\", \"\"),\n        }\n \
+    \   return projects\n```\n\nload_hub_config()의 경로 검증도 동일하게 hub_dir 기준으로 수정.\n\n\
+    ### 3. hub/__main__.py 수정\nget_projects() 호출 시 config_path 인자 전달.\n"
+  constraints:
+  - 절대경로도 그대로 동작해야 함 (is_absolute() 체크)
+  - load_hub_config()의 경로 존재 검증도 동일하게 수정
+  - hub.yaml의 description 필드는 유지
+  dod:
+  - hub.yaml에 상대경로(../os2, ../deck) 사용
+  - cd /Users/hoanshin/Desktop/thePRD/os2-hub && python3 -c "from hub.config import
+    load_hub_config, get_projects; c=load_hub_config(); print(get_projects(c))" 오류
+    없음
+  - 경로가 실제 존재하는 디렉토리로 resolve됨
+  files:
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub.yaml
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub/config.py
+  - /Users/hoanshin/Desktop/thePRD/os2-hub/hub/__main__.py
+  verify: cd /Users/hoanshin/Desktop/thePRD/os2-hub && python3 -c "from hub.config
+    import load_hub_config, get_projects; c=load_hub_config(); p=get_projects(c);
+    print(list(p.keys()))"
+  deps:
+  - T-HUB-05
+  contract_impact: none
+  plan_id: os2-hub

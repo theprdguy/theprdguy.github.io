@@ -1,0 +1,19 @@
+.DS_Store
+__pycache__/
+*.pyc
+.env
+.env.local
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+node_modules/
+worktrees/
+devos/plans/pending/*.yaml
+devos/plans/approved/*.yaml
+devos/plans/rejected/*.yaml
+
+# Claude B auth credentials (OAuth tokens - never commit)
+.claude-b/.credentials.json
+.claude-b/todos/

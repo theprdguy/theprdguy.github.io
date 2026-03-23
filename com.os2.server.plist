@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.os2.server</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/bin/python3</string>
+        <string>-m</string>
+        <string>server</string>
+    </array>
+
+    <!-- 프로젝트 루트로 변경 필요 -->
+    <key>WorkingDirectory</key>
+    <string>/YOUR/PATH/TO/os2</string>
+
+    <!-- .env 파일 대신 여기에 직접 설정 -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>OS2_TG_TOKEN</key>
+        <string>YOUR_BOT_TOKEN</string>
+        <key>OS2_TG_ALLOWED_USER</key>
+        <string>YOUR_TELEGRAM_USER_ID</string>
+    </dict>
+
+    <!-- 부팅 시 자동 시작 -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- 크래시 시 자동 재시작 -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/os2-server.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/os2-server-error.log</string>
+</dict>
+</plist>
