@@ -9,6 +9,8 @@ build/
 .venv/
 venv/
 node_modules/
+apps/web/.next/
+apps/web/out/
 worktrees/
 devos/plans/pending/*.yaml
 devos/plans/approved/*.yaml

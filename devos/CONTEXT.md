@@ -2,10 +2,15 @@
 # Updated by Claude 1 at each session. Keep concise.
 
 ## What We're Building
-(TBD — fill when project is defined)
+개인 포트폴리오 사이트 — Deck, Sift, svrTime, Mining 4개 도구를 소개.
+arzoumanian.fr 스타일 (미니멀 에디토리얼, 크림 배경, grain overlay).
+GitHub Pages 정적 배포.
 
 ## Tech Stack
-(TBD — stack-agnostic OS, fill when project stack is chosen)
+- Next.js (App Router) + Tailwind CSS v4 + TypeScript
+- Static export (`output: 'export'`, basePath: '/portfolio')
+- Fonts: Playfair Display (headings) + Inter (body)
+- Deploy: GitHub Actions → gh-pages branch
 
 ## Key Decisions
 - Multi-LLM OS: Claude 1 (planner) + Claude 2 (backend) + Codex (infra/data) + Gemini (UI)

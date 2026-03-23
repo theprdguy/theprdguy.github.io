@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-inter);
+  --color-bg: #F8F6F4;
+  --color-fg: #000000;
+  --color-muted: rgba(0,0,0,0.4);
+  --color-accent: #BAB6B1;
+  --color-border: rgba(0,0,0,0.08);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+  }
+}

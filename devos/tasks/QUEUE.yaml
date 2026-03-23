@@ -1,5 +1,269 @@
 version: '3.0'
 tickets:
+- id: T-PF-01
+  owner: GEMINI
+  status: blocked
+  priority: high
+  goal: apps/web/ 에 Next.js 앱을 초기화하고 Tailwind v4 디자인 시스템을 세팅한다.
+  context: "포트폴리오 사이트의 기반 구조. apps/web/ 는 현재 .keep 파일만 있는 빈 상태.\n\n## 스택\n- Next.js\
+    \ (App Router) + Tailwind CSS v4 + TypeScript\n- Static export (GitHub Pages 배포용)\n\
+    \n## next.config.ts 핵심 설정\n- output: 'export'\n- basePath: '/portfolio'  (GitHub\
+    \ Pages 서브 경로)\n- images: { unoptimized: true }\n\n## globals.css 핵심 설정 (Tailwind\
+    \ v4 CSS-first)\n@import \"tailwindcss\";\n@theme inline {\n  --font-serif: var(--font-playfair);\n\
+    \  --font-sans: var(--font-inter);\n  --color-bg: #F8F6F4;\n  --color-fg: #000000;\n\
+    \  --color-muted: rgba(0,0,0,0.4);\n  --color-accent: #BAB6B1;\n  --color-border:\
+    \ rgba(0,0,0,0.08);\n}\n\n## layout.tsx\n- next/font/google: Playfair_Display\
+    \ (weights: [400], variable: --font-playfair)\n- next/font/google: Inter (weights:\
+    \ [300, 400], variable: --font-inter)\n- metadata: { title, description } 기본 설정\n\
+    - body에 폰트 CSS 변수 적용\n\n## 디자인 레퍼런스\n- arzoumanian.fr 스타일: 미니멀 에디토리얼, 크림색 배경,\
+    \ letter-spaced 헤딩\n- 이미지 없음 — 텍스트 + 타이포그래피 중심\n"
+  constraints:
+  - tailwind.config.ts 파일 별도 생성 금지 (CSS-first 방식)
+  - apps/web/ 내에서만 작업
+  - apps/web/ 루트에서 npm run dev 실행 가능해야 함
+  dod:
+  - apps/web/package.json, tsconfig.json, next.config.ts 존재
+  - apps/web/src/app/globals.css 에 Tailwind v4 @theme inline + cream 색상 변수
+  - apps/web/src/app/layout.tsx 에 두 폰트 로드 + metadata
+  - apps/web/src/app/page.tsx 에 빈 홈페이지 (Hello World 수준)
+  - cd apps/web && npm run dev → localhost:3000 정상 렌더링
+  files:
+  - apps/web/package.json
+  - apps/web/next.config.ts
+  - apps/web/tsconfig.json
+  - apps/web/src/app/layout.tsx
+  - apps/web/src/app/page.tsx
+  - apps/web/src/app/globals.css
+  verify: cd apps/web && npm run build && echo "BUILD OK"
+  deps: []
+  contract_impact: none
+  plan_id: portfolio
+- id: T-PF-02
+  owner: GEMINI
+  status: blocked
+  priority: high
+  goal: Header, Footer, GrainOverlay, ScrollReveal 컴포넌트를 구현하고 layout.tsx에 통합한다.
+  context: '## 컴포넌트 설명
+
+
+    ### Header.tsx
+
+    - 좌측: 이름 (홈 링크 /)
+
+    - 우측: "About" 링크 (/about), "Contact" (mailto 또는 외부 링크)
+
+    - arzoumanian.fr 참조: 최소한의 네비게이션, 고정 상단 또는 sticky
+
+    - 스타일: 크림 배경 위, 가는 하단 border (rgba(0,0,0,0.08))
+
+
+    ### Footer.tsx
+
+    - 미니멀: 이름 또는 연도 + GitHub/LinkedIn 등 링크
+
+    - 본문 하단, 상단 border
+
+
+    ### GrainOverlay.tsx
+
+    - canvas 기반 grain 텍스처 전체 화면 오버레이
+
+    - arzoumanian.fr 참조: pointer-events: none, position: fixed, z-index 높음
+
+    - useEffect로 canvas 초기화, requestAnimationFrame으로 grain 애니메이션
+
+    - opacity: 0.03~0.05 수준 (subtle)
+
+
+    ### ScrollReveal.tsx
+
+    - children을 래핑하는 컴포넌트
+
+    - Intersection Observer API (useEffect)
+
+    - 뷰포트 진입 시 opacity 0→1, translateY 20px→0 transition
+
+    - ''use client'' 필요
+
+
+    ## layout.tsx 통합
+
+    - <GrainOverlay /> — body 전체에 오버레이
+
+    - <Header /> + {children} + <Footer /> 순서
+
+
+    ## 크림 레이아웃 기본값
+
+    - body: background-color: #F8F6F4, color: #000
+
+    - max-width: 800px 내용 영역, 좌우 자동 마진
+
+    - 상하 패딩: 충분히 (px-6 md:px-0 수준)
+
+    '
+  constraints:
+  - GrainOverlay, ScrollReveal은 'use client'
+  - Header, Footer는 서버 컴포넌트 가능
+  - canvas grain은 성능 고려 (throttle or low fps ok)
+  dod:
+  - Header, Footer, GrainOverlay, ScrollReveal 컴포넌트 존재
+  - layout.tsx에 모든 컴포넌트 통합
+  - npm run dev 후 grain overlay 시각적으로 확인 가능
+  - Header 네비게이션 링크 작동
+  files:
+  - apps/web/src/components/Header.tsx
+  - apps/web/src/components/Footer.tsx
+  - apps/web/src/components/GrainOverlay.tsx
+  - apps/web/src/components/ScrollReveal.tsx
+  - apps/web/src/app/layout.tsx
+  verify: cd apps/web && npm run build && echo "BUILD OK"
+  deps:
+  - T-PF-01
+  contract_impact: none
+  plan_id: portfolio
+- id: T-PF-03
+  owner: GEMINI
+  status: blocked
+  priority: high
+  goal: 홈페이지 (hero + 프로젝트 수직 리스트) 구현 + 타입 정의 + 프로젝트 데이터 파일 작성
+  context: "## types/index.ts\n```typescript\nexport interface Project {\n  slug:\
+    \ string;\n  name: string;\n  tagline: string;           // 한 줄 설명\n  description:\
+    \ string;       // 상세 설명 (2-3 문장)\n  features: string[];        // 주요 기능 목록\n\
+    \  techStack: string[];       // 기술 스택\n  category: string;          // 'Desktop\
+    \ App' | 'Mobile App' | 'Chrome Extension'\n  links: {\n    github?: string;\n\
+    \    website?: string;\n    appStore?: string;\n    chromeStore?: string;\n  };\n\
+    \  year: string;\n}\n```\n\n## data/projects.ts (4개 프로덕트)\n\n### Deck\n- slug:\
+    \ 'deck'\n- name: 'Deck'\n- category: 'Desktop App'\n- tagline: 'AI-native presentation\
+    \ tool'\n- description: AI가 프롬프트에서 HTML/CSS 슬라이드를 생성하는 데스크탑 앱. BYOK 방식(Claude/ChatGPT\
+    \ API).\n- features: ['AI slide generation from prompt', 'Dual-mode editor (visual\
+    \ + code)', 'Presentation mode with speaker notes', 'PDF/HTML export', '.prz file\
+    \ format']\n- techStack: ['Electron', 'React', 'TypeScript', 'Vite', 'Claude API',\
+    \ 'OpenAI API']\n- year: '2025'\n\n### Sift\n- slug: 'sift'\n- name: 'Sift'\n\
+    - category: 'Mobile App'\n- tagline: 'Read later, without the clutter'\n- description:\
+    \ iOS/Android Share Sheet으로 링크를 저장하고, 리치 프리뷰와 인앱 브라우저로 읽는 앱.\n- features: ['iOS/Android\
+    \ Share Sheet integration', 'Rich link previews', 'In-app browser reader', 'Tagging\
+    \ & organization', 'Offline archive']\n- techStack: ['React Native', 'Expo', 'TypeScript',\
+    \ 'Zustand', 'expo-sqlite', 'Drizzle ORM']\n- year: '2025'\n\n### svrTime\n- slug:\
+    \ 'svrtime'\n- name: 'svrTime'\n- category: 'Chrome Extension'\n- tagline: 'Precise\
+    \ server time in your browser'\n- description: 웹 서버의 정확한 시간을 밀리초 단위로 표시하는 크롬 익스텐션.\
+    \ RTT 보정으로 정밀도 향상.\n- features: ['Millisecond-precision server time', 'RTT (round-trip\
+    \ time) correction', 'Chrome Side Panel UI', 'Works on any website']\n- techStack:\
+    \ ['Chrome Extension MV3', 'Side Panel API', 'TypeScript']\n- year: '2024'\n\n\
+    ### Mining\n- slug: 'mining'\n- name: 'Mining'\n- category: 'Chrome Extension'\n\
+    - tagline: 'Clip web content to Obsidian'\n- description: 웹 페이지에서 텍스트를 하이라이트하고\
+    \ Obsidian 볼트에 메모로 저장하는 크롬 익스텐션.\n- features: ['Highlight-to-blockquote capture',\
+    \ 'Direct save to Obsidian vault as .md', 'YAML frontmatter with source URL',\
+    \ 'Up to 5 active memos', 'Popup memo editor']\n- techStack: ['Chrome Extension\
+    \ MV3', 'React', 'Vite', 'TypeScript', 'Tailwind CSS']\n- year: '2024'\n\n## 홈페이지\
+    \ (page.tsx) 레이아웃\n\n### Hero 섹션\n- 이름: 대형 Playfair Display, letter-spacing 넓게\n\
+    - 한 줄 소개: Inter 300, muted 색상\n- arzoumanian.fr처럼 상단 여백 충분히\n\n### 프로젝트 리스트 섹션\n\
+    - 섹션 제목 없음 또는 최소화\n- 수직 리스트, 각 항목:\n  - 번호 또는 연도 (muted, 작게)\n  - 프로젝트 이름 (Playfair\
+    \ Display)\n  - tagline (Inter, muted)\n  - category 배지 (선택)\n  - \"View project\
+    \ →\" 링크 (/projects/{slug})\n- 항목 사이: 얇은 border-bottom 구분선\n- hover 효과: 이름 색상\
+    \ 변화 또는 subtle\n\n## ProjectList.tsx\n- 별도 컴포넌트로 분리\n- Project[] 타입을 props로 받음\n\
+    - ScrollReveal로 각 항목 래핑\n"
+  constraints:
+  - 이미지/스크린샷 없음 (텍스트 위주)
+  - 모든 링크는 실제 없으면 '#' placeholder
+  - ProjectList는 서버 컴포넌트 가능 (ScrollReveal 내부에서 처리)
+  dod:
+  - apps/web/src/types/index.ts Project 타입 정의
+  - apps/web/src/data/projects.ts 4개 프로덕트 데이터
+  - apps/web/src/components/ProjectList.tsx 구현
+  - 홈페이지 hero + 프로젝트 리스트 렌더링
+  - /projects/deck 등 링크 클릭 시 404 (다음 티켓에서 구현) — 링크는 존재해야 함
+  files:
+  - apps/web/src/types/index.ts
+  - apps/web/src/data/projects.ts
+  - apps/web/src/components/ProjectList.tsx
+  - apps/web/src/app/page.tsx
+  verify: cd apps/web && npm run build && echo "BUILD OK"
+  deps:
+  - T-PF-02
+  contract_impact: none
+  plan_id: portfolio
+- id: T-PF-04
+  owner: GEMINI
+  status: blocked
+  priority: high
+  goal: /projects/[slug] 동적 라우트 + About 페이지 구현
+  context: "## projects/[slug]/page.tsx\n\n### generateStaticParams\n```typescript\n\
+    import { projects } from '@/data/projects';\nexport function generateStaticParams()\
+    \ {\n  return projects.map((p) => ({ slug: p.slug }));\n}\n// slugs: deck, sift,\
+    \ svrtime, mining\n```\n\n### 메타데이터\n```typescript\nexport function generateMetadata({\
+    \ params }) {\n  const project = projects.find(p => p.slug === params.slug);\n\
+    \  return { title: project?.name, description: project?.tagline };\n}\n```\n\n\
+    ### 페이지 레이아웃 (ProjectDetail.tsx)\n1. **Back link** — \"← All projects\" (/로 돌아가기)\n\
+    2. **Hero**\n   - category 배지 (Inter, muted, small)\n   - 프로젝트 이름 (Playfair Display,\
+    \ 대형)\n   - tagline (Inter 300, muted)\n   - year\n3. **Description** — 2-3 문장\
+    \ 본문\n4. **Features** — 불릿 리스트 (Inter 400)\n5. **Tech Stack** — 태그 형태 (pill/chip\
+    \ 스타일)\n6. **Links** — GitHub, App Store, Chrome Store 등 버튼/링크\n7. 각 섹션에 ScrollReveal\
+    \ 적용\n\n## about/page.tsx\n- 헤딩: \"About\" (Playfair Display)\n- Bio 본문: placeholder\
+    \ 텍스트 (한국어 또는 영어 모두 수용)\n  예: \"I'm a product designer and builder who creates\
+    \ tools for focused work.\"\n- 연락처 정보 (email placeholder)\n- ScrollReveal 적용\n\
+    \n## 스타일 일관성\n- 크림 배경, 최대 너비 800px, 충분한 상하 패딩\n- arzoumanian.fr처럼 여백과 타이포그래피 중심\n"
+  constraints:
+  - Static export 호환: generateStaticParams 필수
+  - 이미지 없음 (placeholder도 불필요)
+  - not-found 처리: 없는 slug 접근 시 notFound() 호출
+  dod:
+  - /projects/deck, /projects/sift, /projects/svrtime, /projects/mining 모두 접근 가능
+  - 각 페이지에 프로젝트 데이터 정상 렌더링
+  - /about 페이지 존재하고 렌더링
+  - npm run build 성공 (generateStaticParams 4개 slug 정적 생성)
+  files:
+  - apps/web/src/app/projects/[slug]/page.tsx
+  - apps/web/src/components/ProjectDetail.tsx
+  - apps/web/src/app/about/page.tsx
+  verify: cd apps/web && npm run build && ls out/projects/
+  deps:
+  - T-PF-03
+  contract_impact: none
+  plan_id: portfolio
+- id: T-PF-05
+  owner: GEMINI
+  status: blocked
+  priority: medium
+  goal: SEO 파일 (robots.ts, sitemap.ts) + GitHub Actions 배포 워크플로우 작성
+  context: "## robots.ts\n```typescript\n// apps/web/src/app/robots.ts\nexport const\
+    \ dynamic = \"force-static\";\nexport default function robots() {\n  return {\n\
+    \    rules: { userAgent: '*', allow: '/' },\n    sitemap: 'https://{username}.github.io/portfolio/sitemap.xml',\n\
+    \  };\n}\n```\n⚠️ {username}은 실제 GitHub username으로 교체 필요 (placeholder로 남겨도 됨)\n\
+    \n## sitemap.ts\n```typescript\n// apps/web/src/app/sitemap.ts\nexport const dynamic\
+    \ = \"force-static\";\nimport { projects } from '@/data/projects';\nconst base\
+    \ = 'https://{username}.github.io/portfolio';\nexport default function sitemap()\
+    \ {\n  return [\n    { url: base, lastModified: new Date() },\n    { url: `${base}/about`,\
+    \ lastModified: new Date() },\n    ...projects.map(p => ({ url: `${base}/projects/${p.slug}`,\
+    \ lastModified: new Date() })),\n  ];\n}\n```\n\n## GitHub Actions 워크플로우\n파일:\
+    \ .github/workflows/deploy.yml (레포 루트 기준)\n\n```yaml\nname: Deploy Portfolio to\
+    \ GitHub Pages\non:\n  push:\n    branches: [main]\n    paths: ['apps/web/**']\n\
+    permissions:\n  contents: write\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n\
+    \    steps:\n      - uses: actions/checkout@v4\n      - uses: actions/setup-node@v4\n\
+    \        with:\n          node-version: '20'\n          cache: 'npm'\n       \
+    \   cache-dependency-path: apps/web/package-lock.json\n      - run: cd apps/web\
+    \ && npm ci\n      - run: cd apps/web && npm run build\n      - uses: peaceiris/actions-gh-pages@v4\n\
+    \        with:\n          github_token: ${{ secrets.GITHUB_TOKEN }}\n        \
+    \  publish_dir: apps/web/out\n```\n\n## basePath 확인\nnext.config.ts의 basePath:\
+    \ '/portfolio' 가 실제 레포 이름과 일치해야 함.\n레포 이름이 다를 경우 수정 필요.\n"
+  constraints:
+  - 'robots.ts, sitemap.ts: export const dynamic = "force-static" 필수'
+  - GitHub Actions는 레포 루트의 .github/workflows/ 에 위치
+  - apps/web/out/ → gh-pages 브랜치로 배포
+  dod:
+  - apps/web/src/app/robots.ts 존재, force-static 포함
+  - apps/web/src/app/sitemap.ts 존재, 6개 URL (/, /about, /projects/deck~mining)
+  - .github/workflows/deploy.yml 존재
+  - npm run build → out/ 디렉토리에 정적 파일 생성 확인
+  files:
+  - apps/web/src/app/robots.ts
+  - apps/web/src/app/sitemap.ts
+  - .github/workflows/deploy.yml
+  verify: cd apps/web && npm run build && ls out/
+  deps:
+  - T-PF-04
+  contract_impact: none
+  plan_id: portfolio
 - id: T-001
   owner: CLAUDE2
   status: doing

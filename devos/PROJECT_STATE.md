@@ -1,20 +1,19 @@
 # Project State (SSOT)
 
 ## North Star
-- (TBD) Define your project here — one sentence describing what you're building and why.
+- 만든 도구들(Deck, Sift, svrTime, Mining)을 소개하는 미니멀 에디토리얼 포트폴리오 사이트. GitHub Pages 호스팅.
 
 ## Current Milestone
-- os2 Agentic Coding OS v3.0 — Foundation
+- Portfolio Site v1 — arzoumanian.fr 스타일 Next.js 정적 사이트
 - DoD:
-  - [ ] SSOT files exist and are kept updated
-  - [ ] os2-server running (TG bot + dispatcher)
-  - [ ] 4-agent registry configured
-  - [ ] Session log system operational
-  - [ ] Approval workflow operational (plans/pending → approved → dispatch)
-  - [ ] Claude 1 dual mode working (local CLI + TG remote)
+  - [ ] T-PF-01: Next.js scaffold + design system (GEMINI)
+  - [ ] T-PF-02: Layout + nav + grain overlay (GEMINI)
+  - [ ] T-PF-03: Home page + project data (GEMINI)
+  - [ ] T-PF-04: Project detail pages + About page (GEMINI)
+  - [ ] T-PF-05: SEO + GitHub Actions deploy (GEMINI)
 
 ## What works now (demo path)
-- (TBD — fill in as features complete)
+- 없음 — T-PF-01부터 시작
 
 ## Agent Status
 | Agent | Role | Status | Instruction File |
@@ -25,14 +24,17 @@
 | gemini-ui | UI Design + Publishing | active | GEMINI.md |
 
 ## In progress
-- T-001: os2 setup automation (CLAUDE2, doing)
-- T-HUB-01~04: os2-hub 멀티 프로젝트 TG 컨트롤러 (CLAUDE2, todo)
+- 없음 (T-PF-01 dispatch 대기)
 
 ## Blockers / Questions
-- See questions/QUEUE.md
+- 없음
 
 ## Decisions (latest)
-- ADRs live under docs/ADR/
+- 빌더: GEMINI (UI/publishing)
+- 이미지: 텍스트 위주 먼저, 스크린샷 나중에
+- 호스팅: 기본 GitHub Pages (username.github.io/portfolio)
+- basePath: '/portfolio' (레포 이름과 일치해야 함)
+- 디자인 레퍼런스: arzoumanian.fr (미니멀 에디토리얼, grain overlay, scroll animation)
 
 ## Next dispatch hint
-- Define your project → update this file → create first real tickets
+- make dispatch T=T-PF-01 (GEMINI)
