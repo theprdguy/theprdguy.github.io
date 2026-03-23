@@ -2,16 +2,25 @@ import Link from 'next/link';
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-[var(--color-bg)]/80 border-b border-[var(--color-border)]">
-      <div className="max-w-[800px] mx-auto px-6 md:px-0 flex items-center justify-between py-4">
-        <Link href="/" className="font-serif text-lg tracking-widest hover:text-[var(--color-muted)] transition-colors">
-          PORTFOLIO
+    <header className="w-full">
+      <div className="max-w-[760px] mx-auto px-6 xl:px-0 flex items-baseline justify-between py-10">
+        <Link
+          href="/"
+          className="font-serif text-base tracking-[0.18em] uppercase hover:opacity-50 transition-opacity duration-300"
+        >
+          theprdguy
         </Link>
-        <nav className="flex items-center gap-6 font-sans text-sm font-light">
-          <Link href="/about" className="hover:text-[var(--color-muted)] transition-colors">
+        <nav className="flex items-baseline gap-8 font-sans text-[13px] font-light tracking-wide">
+          <Link
+            href="/about"
+            className="hover:opacity-50 transition-opacity duration-300"
+          >
             About
           </Link>
-          <a href="mailto:hello@example.com" className="hover:text-[var(--color-muted)] transition-colors">
+          <a
+            href="mailto:theprdguy@gmail.com"
+            className="hover:opacity-50 transition-opacity duration-300"
+          >
             Contact
           </a>
         </nav>

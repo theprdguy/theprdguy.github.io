@@ -5,14 +5,25 @@
   --font-sans: var(--font-inter);
   --color-bg: #F8F6F4;
   --color-fg: #000000;
-  --color-muted: rgba(0,0,0,0.4);
+  --color-muted: rgba(0, 0, 0, 0.38);
   --color-accent: #BAB6B1;
-  --color-border: rgba(0,0,0,0.08);
+  --color-border: rgba(0, 0, 0, 0.07);
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
     background-color: var(--color-bg);
     color: var(--color-fg);
+  }
+
+  ::selection {
+    background: #000;
+    color: var(--color-bg);
   }
 }

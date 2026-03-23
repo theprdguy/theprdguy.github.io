@@ -4,21 +4,21 @@ import ScrollReveal from '@/components/ScrollReveal';
 
 export default function Home() {
   return (
-    <div className="flex flex-col gap-24 py-16 md:py-24">
+    <div className="max-w-[760px] mx-auto px-6 xl:px-0 pt-16 pb-8">
+      {/* Hero */}
       <ScrollReveal>
-        <section className="flex flex-col gap-6">
-          <h1 className="font-serif text-5xl md:text-6xl tracking-[0.2em] uppercase">
-            PORTFOLIO
+        <section className="mb-24">
+          <h1 className="font-serif text-[clamp(2.8rem,8vw,5rem)] leading-[1.05] tracking-tight mb-8">
+            Products &<br />tools I build.
           </h1>
-          <p className="font-sans font-light text-[var(--color-muted)] text-lg max-w-lg leading-relaxed">
-            I build tools that help people focus, read, and create without the clutter.
+          <p className="font-sans font-light text-[15px] text-[var(--color-muted)] max-w-sm leading-relaxed">
+            Independent builder focused on focus tools, reading, and presentation.
           </p>
         </section>
       </ScrollReveal>
 
-      <section>
-        <ProjectList projects={projects} />
-      </section>
+      {/* Project list */}
+      <ProjectList projects={projects} />
     </div>
   );
 }

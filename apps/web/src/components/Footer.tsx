@@ -1,15 +1,18 @@
 export default function Footer() {
-  const year = new Date().getFullYear();
   return (
-    <footer className="w-full border-t border-[var(--color-border)] mt-24">
-      <div className="max-w-[800px] mx-auto px-6 md:px-0 flex flex-col md:flex-row items-center justify-between gap-4 py-8 font-sans text-xs font-light text-[var(--color-muted)]">
-        <p>© {year} Portfolio. All rights reserved.</p>
-        <div className="flex gap-4">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-fg)] transition-colors">
+    <footer className="w-full border-t border-[var(--color-border)] mt-32">
+      <div className="max-w-[760px] mx-auto px-6 xl:px-0 flex items-center justify-between py-8">
+        <p className="font-sans text-xs font-light text-[var(--color-muted)] tracking-wide">
+          © {new Date().getFullYear()} theprdguy
+        </p>
+        <div className="flex gap-6 font-sans text-xs font-light text-[var(--color-muted)]">
+          <a
+            href="https://github.com/theprdguy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[var(--color-fg)] transition-colors duration-300 tracking-wide"
+          >
             GitHub
-          </a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-fg)] transition-colors">
-            LinkedIn
           </a>
         </div>
       </div>

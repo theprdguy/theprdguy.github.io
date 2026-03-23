@@ -8,35 +8,38 @@ interface ProjectListProps {
 
 export default function ProjectList({ projects }: ProjectListProps) {
   return (
-    <div className="flex flex-col w-full">
-      {projects.map((project) => (
-        <ScrollReveal key={project.slug}>
-          <div className="group block w-full py-8 border-b border-[var(--color-border)] last:border-b-0">
-            <div className="flex flex-col md:flex-row md:items-baseline justify-between gap-2 mb-2">
-              <div className="flex items-baseline gap-4">
-                <span className="font-sans text-xs font-light text-[var(--color-muted)] w-8">
-                  {project.year}
-                </span>
-                <h3 className="font-serif text-2xl group-hover:text-[var(--color-muted)] transition-colors">
-                  {project.name}
-                </h3>
-              </div>
-              <span className="font-sans text-[10px] uppercase tracking-wider text-[var(--color-muted)] border border-[var(--color-border)] px-2 py-1 rounded-full w-fit">
-                {project.category}
-              </span>
-            </div>
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pl-0 md:pl-12 mt-2">
-              <p className="font-sans font-light text-sm text-[var(--color-muted)]">
+    <div className="w-full border-t border-[var(--color-border)]">
+      {projects.map((project, i) => (
+        <ScrollReveal key={project.slug} delay={i * 60}>
+          <Link
+            href={`/projects/${project.slug}`}
+            className="group flex items-baseline gap-6 py-7 border-b border-[var(--color-border)] cursor-pointer block"
+          >
+            {/* Index */}
+            <span className="font-sans text-[11px] font-light text-[var(--color-muted)] w-5 shrink-0 tabular-nums">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+
+            {/* Name + tagline */}
+            <div className="flex-1 min-w-0">
+              <h3 className="font-serif text-[22px] leading-snug group-hover:opacity-50 transition-opacity duration-300 mb-1">
+                {project.name}
+              </h3>
+              <p className="font-sans text-[13px] font-light text-[var(--color-muted)] leading-relaxed">
                 {project.tagline}
               </p>
-              <Link
-                href={`/projects/${project.slug}`}
-                className="font-sans text-sm font-light hover:text-[var(--color-muted)] transition-colors inline-flex items-center gap-1"
-              >
-                View project <span>&rarr;</span>
-              </Link>
             </div>
-          </div>
+
+            {/* Year + arrow */}
+            <div className="flex items-baseline gap-5 shrink-0">
+              <span className="font-sans text-[11px] font-light text-[var(--color-muted)] tabular-nums hidden sm:block">
+                {project.year}
+              </span>
+              <span className="font-sans text-sm text-[var(--color-muted)] group-hover:text-[var(--color-fg)] group-hover:translate-x-1 transition-all duration-300">
+                →
+              </span>
+            </div>
+          </Link>
         </ScrollReveal>
       ))}
     </div>
